@@ -228,8 +228,9 @@ impl BitFlags {
     const C: u8 = 0b1000_0000; // century flag
 }
 
-const DEVICE_ADDRESS: u8 = 0x51;
-//const DEVICE_ADDRESS: u8 = 0xa2;
+// const DEVICE_ADDRESS: u8 = 0x51;
+const WRITE_ADDRESS: u8 = 0xa2;
+const READ_ADDRESS: u8 = 0xa3;
 
 /// Two possible choices, used for various enable/disable bit flags
 #[allow(non_camel_case_types)]
@@ -275,14 +276,14 @@ where
     /// Write to a register.
     fn write_register(&mut self, register: u8, data: u8) -> Result<(), Error<E>> {
         let payload: [u8; 2] = [register, data];
-        self.i2c.write(DEVICE_ADDRESS, &payload).map_err(Error::I2C)
+        self.i2c.write(WRITE_ADDRESS, &payload).map_err(Error::I2C)
     }
 
     /// Read from a register.
     fn read_register(&mut self, register: u8) -> Result<u8, Error<E>> {
         let mut data = [0];
         self.i2c
-            .write_read(DEVICE_ADDRESS, &[register], &mut data)
+            .write_read(READ_ADDRESS, &[register], &mut data)
             .map_err(Error::I2C)
             .and(Ok(data[0]))
     }

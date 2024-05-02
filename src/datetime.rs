@@ -6,7 +6,7 @@
 //! TO DO: As the chip may be used for devices that are clocks only, without the calendar function
 //! a convenient set_time() function could be added (sets only seconds, minutes and hours)
 
-use super::{decode_bcd, encode_bcd, hal, BitFlags, Error, Register, DEVICE_ADDRESS, PCF8563};
+use super::{decode_bcd, encode_bcd, hal, BitFlags, Error, Register, READ_ADDRESS, WRITE_ADDRESS, PCF8563};
 use hal::blocking::i2c::{Write, WriteRead};
 
 /// Container to hold date and time components.
@@ -47,7 +47,7 @@ where
     pub fn get_datetime(&mut self) -> Result<DateTime, Error<E>> {
         let mut data = [0; 7];
         self.i2c
-            .write_read(DEVICE_ADDRESS, &[Register::VL_SECONDS], &mut data)
+            .write_read(READ_ADDRESS, &[Register::VL_SECONDS], &mut data)
             .map_err(Error::I2C)?;
         Ok(DateTime {
             year: decode_bcd(data[6]),
@@ -86,7 +86,7 @@ where
             encode_bcd(datetime.month), //century bit set to 0
             encode_bcd(datetime.year),
         ];
-        self.i2c.write(DEVICE_ADDRESS, &payload).map_err(Error::I2C)
+        self.i2c.write(WRITE_ADDRESS, &payload).map_err(Error::I2C)
     }
 
     /// Set only the time, date remains unchanged.
@@ -102,7 +102,7 @@ where
             encode_bcd(datetime.minutes),
             encode_bcd(datetime.hours),
         ];
-        self.i2c.write(DEVICE_ADDRESS, &payload).map_err(Error::I2C)
+        self.i2c.write(WRITE_ADDRESS, &payload).map_err(Error::I2C)
     }
 
     /// Read the century flag (0: century N, 1: century N+1).
