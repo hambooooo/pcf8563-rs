@@ -5,8 +5,9 @@
 //! TO DO: Keep the enabled/disabled bit when setting the alarm components (minutes, hours, day, weekday)
 
 use super::{
-    decode_bcd, encode_bcd, hal, I2c, BitFlags, Control, Error, Register, DEVICE_ADDRESS, PCF8563,
+    BitFlags, Control, decode_bcd, encode_bcd, Error, I2c, PCF8563, READ_ADDRESS, Register,
 };
+
 //use embedded_hal as hal;
 //use hal::i2c::I2c;
 
@@ -134,7 +135,7 @@ where
     pub fn get_alarm_minutes(&mut self) -> Result<u8, Error<E>> {
         let mut data = [0];
         self.i2c
-            .write_read(DEVICE_ADDRESS, &[Register::MINUTE_ALARM], &mut data)
+            .write_read(READ_ADDRESS, &[Register::MINUTE_ALARM], &mut data)
             .map_err(Error::I2C)?;
         Ok(decode_bcd(data[0]))
     }
@@ -143,7 +144,7 @@ where
     pub fn get_alarm_hours(&mut self) -> Result<u8, Error<E>> {
         let mut data = [0];
         self.i2c
-            .write_read(DEVICE_ADDRESS, &[Register::HOUR_ALARM], &mut data)
+            .write_read(READ_ADDRESS, &[Register::HOUR_ALARM], &mut data)
             .map_err(Error::I2C)?;
         Ok(decode_bcd(data[0]))
     }
@@ -152,7 +153,7 @@ where
     pub fn get_alarm_day(&mut self) -> Result<u8, Error<E>> {
         let mut data = [0];
         self.i2c
-            .write_read(DEVICE_ADDRESS, &[Register::DAY_ALARM], &mut data)
+            .write_read(READ_ADDRESS, &[Register::DAY_ALARM], &mut data)
             .map_err(Error::I2C)?;
         Ok(decode_bcd(data[0]))
     }
@@ -161,7 +162,7 @@ where
     pub fn get_alarm_weekday(&mut self) -> Result<u8, Error<E>> {
         let mut data = [0];
         self.i2c
-            .write_read(DEVICE_ADDRESS, &[Register::WEEKDAY_ALARM], &mut data)
+            .write_read(READ_ADDRESS, &[Register::WEEKDAY_ALARM], &mut data)
             .map_err(Error::I2C)?;
         Ok(decode_bcd(data[0]))
     }

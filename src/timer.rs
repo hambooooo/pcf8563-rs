@@ -1,6 +1,6 @@
 //! All timer-related functions will be defined here
 
-use super::{hal, I2c, BitFlags, Control, Error, Register, DEVICE_ADDRESS, PCF8563};
+use super::{hal, I2c, BitFlags, Control, Error, Register, READ_ADDRESS, PCF8563};
 
 
 /// Four possible timer frequency settings.
@@ -104,7 +104,7 @@ where
     pub fn get_timer(&mut self) -> Result<u8, Error<E>> {
         let mut data = [0];
         self.i2c
-            .write_read(DEVICE_ADDRESS, &[Register::TIMER], &mut data)
+            .write_read(READ_ADDRESS, &[Register::TIMER], &mut data)
             .map_err(Error::I2C)?;
         Ok(data[0])
     }
